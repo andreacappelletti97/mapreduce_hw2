@@ -7,6 +7,8 @@ import java.io.IOException
 import java.util.Iterator
 import scala.collection.convert.ImplicitConversions.`iterator asScala`
 
+class WordCount
+
 object WordCount {
   class Map extends MapReduceBase with Mapper[LongWritable, Text, Text, IntWritable] {
     private final val one = new IntWritable(1)
@@ -25,7 +27,7 @@ object WordCount {
   class Reduce extends MapReduceBase with Reducer[Text, IntWritable, Text, IntWritable] {
     @throws[IOException]
     def reduce(key: Text, values: Iterator[IntWritable], output: OutputCollector[Text, IntWritable], reporter: Reporter) = {
-
+      
       val sum = values.toList.reduce((valueOne, valueTwo) => new IntWritable(valueOne.get() + valueTwo.get()))
       output.collect(key, new IntWritable(sum.get()))
     }
