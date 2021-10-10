@@ -1,8 +1,7 @@
 
 # sbt
 bin/
-project/project/
-project/target/
+project/
 target/
 build/
 out/
