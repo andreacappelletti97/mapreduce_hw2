@@ -42,10 +42,13 @@ object EvenOddSum {
     logger.info("REDUCER")
     @throws[IOException]
     def reduce(key: Text, values: Iterator[IntWritable], output: OutputCollector[Text, IntWritable], reporter: Reporter) = {
+      System.out.println("enter")
       val sum = values.toList.reduce((valueOne, valueTwo) =>
         System.out.println("value 1")
+        System.out.println(key)
         System.out.println(valueOne.get())
         System.out.println("value 2")
+        System.out.println(key)
         System.out.println(valueTwo.get())
         new IntWritable(valueOne.get() + valueTwo.get())
 
@@ -62,6 +65,8 @@ object EvenOddSum {
     conf.setJobName("EvenOddSum")
     logger.info("STARTING THE EVEN ODD SUM")
 
+    //CSV output format
+    conf.set("mapred.textoutputformat.separator", ",");
 
     conf.setOutputKeyClass(classOf[Text])
     conf.setOutputValueClass(classOf[IntWritable])
@@ -72,6 +77,7 @@ object EvenOddSum {
 
     conf.setInputFormat(classOf[TextInputFormat])
     conf.setOutputFormat(classOf[TextOutputFormat[Text, IntWritable]])
+
 
     FileInputFormat.setInputPaths(conf, new Path(args(0)))
     FileOutputFormat.setOutputPath(conf, new Path(args(1)))

@@ -23,9 +23,9 @@ object TypeFrequency {
     @throws[IOException]
     def map(key: LongWritable, value: Text, output: OutputCollector[Text, IntWritable], reporter: Reporter) = {
       val line: String = value.toString
-      line.split("[\\[\\]]").foreach { token =>
-      val matcher = pattern.matcher(token)
-      if(matcher.matches()){
+      line.split(" ").foreach { token =>
+      val matcher = "INFO"
+      if(token.toString.equals(matcher.toString)){
         logLevel.set(token)
         output.collect(logLevel, one)
       }
