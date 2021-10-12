@@ -24,8 +24,8 @@ object TypeFrequency {
     def map(key: LongWritable, value: Text, output: OutputCollector[Text, IntWritable], reporter: Reporter) = {
       val line: String = value.toString
       line.split(" ").foreach { token =>
-      val matcher = "INFO"
-      if(token.toString.equals(matcher.toString)){
+      val matcher = pattern.matcher(token)
+      if(matcher.matches()){
         logLevel.set(token)
         output.collect(logLevel, one)
       }
@@ -36,8 +36,8 @@ object TypeFrequency {
   class Reduce extends MapReduceBase with Reducer[Text, IntWritable, Text, IntWritable] {
     @throws[IOException]
     def reduce(key: Text, values: Iterator[IntWritable], output: OutputCollector[Text, IntWritable], reporter: Reporter) = {
-      val sum = values.toList.reduce((valueOne, valueTwo) => new IntWritable(valueOne.get() + valueTwo.get()))
-      output.collect(key, new IntWritable(sum.get()))
+      val sum = values.foldLeft(0) { (m,x) => m + x.get }
+      output.collect(key, new IntWritable(sum))
     }
   }
 
@@ -48,6 +48,8 @@ object TypeFrequency {
     conf.setJobName("TypeFrequency")
     logger.info("STARTING THE EVEN ODD SUM")
 
+    //CSV output format
+    conf.set("mapred.textoutputformat.separator", ",");
 
     conf.setOutputKeyClass(classOf[Text])
     conf.setOutputValueClass(classOf[IntWritable])
@@ -63,6 +65,5 @@ object TypeFrequency {
     FileOutputFormat.setOutputPath(conf, new Path(args(1)))
     JobClient.runJob(conf)
     logger.info("FINISH")
-
   }
 }

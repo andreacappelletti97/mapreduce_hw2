@@ -42,19 +42,26 @@ object EvenOddSum {
     logger.info("REDUCER")
     @throws[IOException]
     def reduce(key: Text, values: Iterator[IntWritable], output: OutputCollector[Text, IntWritable], reporter: Reporter) = {
-      System.out.println("enter")
+      System.out.println("enter "+key)
+
+      //values.foreach(c => System.out.println("element: "+c))
+      //1,2,3,4
+      //1,2
+      //2,3
+      //3,4
+      /*
       val sum = values.toList.reduce((valueOne, valueTwo) =>
-        System.out.println("value 1")
-        System.out.println(key)
-        System.out.println(valueOne.get())
-        System.out.println("value 2")
-        System.out.println(key)
-        System.out.println(valueTwo.get())
+        System.out.println(valueOne.get() + " - " + valueTwo.get())
         new IntWritable(valueOne.get() + valueTwo.get())
+      )*/
 
-      )
+      // 0, 2
+      // 2, 4
+      // 6, 6
+      // 12
+      val sum = values.foldLeft(0) { (t,i) => t + i.get }
 
-      output.collect(key, new IntWritable(sum.get()))
+      output.collect(key, new IntWritable(sum))
     }
   }
 
