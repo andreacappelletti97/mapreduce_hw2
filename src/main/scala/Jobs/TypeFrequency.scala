@@ -1,6 +1,6 @@
 package Jobs
 
-import HelperUtils.CreateLogger
+import HelperUtils.{CreateLogger, ObtainConfigReference}
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.{IntWritable, LongWritable, Text}
 import org.apache.hadoop.mapred.{FileInputFormat, FileOutputFormat, JobClient, JobConf, MapReduceBase, Mapper, OutputCollector, Reducer, Reporter, TextInputFormat, TextOutputFormat}
@@ -14,9 +14,13 @@ class TypeFrequency
 
 object TypeFrequency {
   val logger = CreateLogger(classOf[TypeFrequency])
+  val config = ObtainConfigReference("config") match {
+    case Some(value) => value
+    case None => throw new RuntimeException("Cannot obtain a reference to the config data.")
+  }
 
   class Map extends MapReduceBase with Mapper[LongWritable, Text, Text, IntWritable] {
-    private final val pattern = Pattern.compile("(TRACE)|(DEBUG)|(INFO)|(WARN)|(ERROR)|(FATAL)")
+    private final val pattern = Pattern.compile(config.getString("config.job0.pattern"))
     private final val one = new IntWritable(1)
     private val logLevel = new Text()
 
@@ -43,24 +47,22 @@ object TypeFrequency {
 
 
   @throws[Exception]
-  def main(args: Array[String]) = {
+  def Start(args: Array[String]) = {
     val conf: JobConf = new JobConf(this.getClass)
     conf.setJobName("TypeFrequency")
     logger.info("STARTING THE EVEN ODD SUM")
-
     //CSV output format
-    conf.set("mapred.textoutputformat.separator", ",");
-
+    conf.set("mapred.textoutputformat.separator", config.getString("config.outputFormat"));
     conf.setOutputKeyClass(classOf[Text])
     conf.setOutputValueClass(classOf[IntWritable])
 
     conf.setMapperClass(classOf[Map])
     conf.setCombinerClass(classOf[Reduce])
+
     conf.setReducerClass(classOf[Reduce])
-
     conf.setInputFormat(classOf[TextInputFormat])
-    conf.setOutputFormat(classOf[TextOutputFormat[Text, IntWritable]])
 
+    conf.setOutputFormat(classOf[TextOutputFormat[Text, IntWritable]])
     FileInputFormat.setInputPaths(conf, new Path(args(0)))
     FileOutputFormat.setOutputPath(conf, new Path(args(1)))
     JobClient.runJob(conf)

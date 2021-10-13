@@ -34,7 +34,7 @@ libraryDependencies ++= Seq(
   "org.cloudsimplus" % "cloudsim-plus" % cloudSimPlusVersion
 )
 
-mainClass in (Compile, run) := Some("Jobs.TypeFrequency")
-mainClass in assembly := Some("Jobs.TypeFrequency")
+mainClass in (Compile, run) := Some("Simulation")
+mainClass in assembly := Some("Simulation")
 
 assemblyJarName in assembly := "acappe2_hw2.jar"

@@ -7,11 +7,11 @@ import org.scalatest.matchers.should.Matchers
 class BasicCloudSimPlusExampleTestSuite extends AnyFlatSpec with Matchers {
   behavior of "configuration parameters module"
 
-  it should "obtain the utilization ratio" in {
-    config.getDouble("cloudSimulator.utilizationRatio") shouldBe 0.5E0
+  it should "obtain the right type matching pattern" in {
+    config.getString("config.job0.pattern") shouldBe "(TRACE)|(DEBUG)|(INFO)|(WARN)|(ERROR)|(FATAL)"
   }
 
-  it should "obtain the MIPS capacity" in {
-    config.getLong("cloudSimulator.vm.mipsCapacity") shouldBe 1000
+  it should "Set the right output format CSV" in {
+    config.getString("config.outputFormat") shouldBe ","
   }
 }
