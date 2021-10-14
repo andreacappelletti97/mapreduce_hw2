@@ -1,5 +1,7 @@
 package MapReduce
 
+import HelperUtils.{CreateLogger, ObtainConfigReference}
+import Jobs.TypeFrequency
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.hadoop.io.{IntWritable, Text}
@@ -13,16 +15,21 @@ import java.util.regex.Pattern
 class TimeDriver
 
 object TimeDriver {
+  val logger = CreateLogger(classOf[TypeFrequency])
+  val config = ObtainConfigReference("config") match {
+    case Some(value) => value
+    case None => throw new RuntimeException("Cannot obtain a reference to the config data.")
+  }
 
   def Run(args: Array[String]) = {
     val jobName0 = "job0"
-    val timePattern =  Pattern.compile("([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(:|\\.)\\d{3}")
+    val timePattern =  Pattern.compile(config.getString("config.timePattern"))
 
     val conf: Configuration = new Configuration()
-    conf.set("mapred.textoutputformat.separator", ",")
+    conf.set("mapred.textoutputformat.separator", config.getString("config.outputFormat"))
 
 
-    val newPath = new Path(args(0), "input.txt")
+    val newPath = new Path(args(0), config.getString("config.logFileName"))
     val fs = FileSystem.get(conf)
     val input = fs.open(newPath)
     val bf = new BufferedReader(new InputStreamReader(input))
@@ -41,8 +48,8 @@ object TimeDriver {
     } else {
       System.out.println("NOT MATCH ")
     }
-    conf.set("splitInterval", "5000")
-    
+    conf.set("splitInterval", config.getString("config.timeWindow"))
+
     val job0 = Job.getInstance(conf, jobName0)
     job0.setJarByClass(classOf[TimeMapper])
     job0.setMapperClass(classOf[TimeMapper])
