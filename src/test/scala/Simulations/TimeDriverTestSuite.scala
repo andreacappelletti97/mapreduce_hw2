@@ -1,10 +1,10 @@
 package Simulations
 
-import Simulations.BasicCloudSimPlusExample.config
+import MapReduce.TimeDriver.config
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class BasicCloudSimPlusExampleTestSuite extends AnyFlatSpec with Matchers {
+class TimeDriverTestSuite extends AnyFlatSpec with Matchers {
   behavior of "configuration parameters module"
 
   it should "obtain the right type matching pattern" in {
