@@ -17,9 +17,9 @@ object Driver {
     val jobName0 = "job0"
     val conf: Configuration = new Configuration()
     conf.set("mapred.textoutputformat.separator", ",")
-    conf.set("myConfig", "myConfig")
+    conf.set("even", "even")
+    conf.set("odd", "odd")
     val job0 = Job.getInstance(conf, jobName0)
-    System.out.println("enter here1!")
     job0.setJarByClass(classOf[MyMapper])
     job0.setMapperClass(classOf[MyMapper])
     job0.setReducerClass(classOf[MyReducer])
@@ -29,8 +29,7 @@ object Driver {
     job0.setOutputValueClass(classOf[IntWritable])
     job0.setOutputFormatClass(classOf[TextOutputFormat[Text, IntWritable]])
 
-    System.out.println("args" + args(0))
-    FileInputFormat.addInputPath(job0, new Path("input"))
+    FileInputFormat.addInputPath(job0, new Path(args(0)))
     FileOutputFormat.setOutputPath(job0, new Path(args(1)))
 
     job0.waitForCompletion(true)

@@ -5,13 +5,14 @@ import org.apache.hadoop.mapreduce.Mapper
 
 
 class MyMapper extends Mapper[LongWritable, Text, Text, IntWritable] {
-  private final val even = Text("even")
-  private final val odd = Text("odd")
+
   override def map(key: LongWritable, value:Text, context:Mapper[LongWritable, Text, Text, IntWritable]#Context): Unit = {
     val conf = context.getConfiguration
-    val test = conf.get("myConfig")
-  System.out.println(test)
-    System.out.println(value)
+    val evenString = conf.get("even")
+    val oddString = conf.get("odd")
+    val even = new Text(evenString)
+    val odd = new Text(oddString)
+    
     val number  = Integer.parseInt(value.toString)
     val n = IntWritable(number)
 

@@ -1,6 +1,6 @@
 import HelperUtils.{CreateLogger, ObtainConfigReference}
 import Jobs.{LocalTimeIntervals, TimeIntervals, TypeFrequency}
-import MapReduce.Driver
+import MapReduce.{Driver, TimeDriver}
 import Simulations.BasicCloudSimPlusExample
 import com.typesafe.config.ConfigFactory
 import org.apache.hadoop.io.{IntWritable, Text}
@@ -18,7 +18,7 @@ object Simulation:
 
   def main(args: Array[String])  = {
     logger.info("Running mapreduce job0")
-    Driver.Run(args)
+    TimeDriver.Run(args)
     //TypeFrequency.Start(args)
     logger.info("Finished mapreduce job0...")
   }
