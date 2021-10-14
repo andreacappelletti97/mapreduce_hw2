@@ -1,7 +1,6 @@
 import HelperUtils.{CreateLogger, ObtainConfigReference}
-import Jobs.{LocalTimeIntervals, TimeIntervals, TypeFrequency}
+import Jobs.{TypeFrequency}
 import MapReduce.{Driver, TimeDriver}
-import Simulations.BasicCloudSimPlusExample
 import com.typesafe.config.ConfigFactory
 import org.apache.hadoop.io.{IntWritable, Text}
 import org.apache.hadoop.mapred.{JobConf, TextOutputFormat}
