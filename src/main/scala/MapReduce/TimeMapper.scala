@@ -25,8 +25,8 @@ class TimeMapper extends Mapper[LongWritable, Text, Text, Text] {
     val currentTime = splittedString(0)
     val dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-    val currentDate = dateFormat.parse(config.getString("config.standardDate") + currentTime);
-    val startDate = dateFormat.parse(config.getString("config.standardDate") + startTime);
+    val currentDate = dateFormat.parse(config.getString("config.job0.standardDate") + currentTime);
+    val startDate = dateFormat.parse(config.getString("config.job0.standardDate") + startTime);
     val dif = ((currentDate.getTime() - startDate.getTime()) / splitInterval).round
     context.write(new Text(dif.toString), value)
 

@@ -22,48 +22,54 @@ object TimeDriver {
   }
 
   def Run(args: Array[String]) = {
-    val jobName0 = "job0"
-    val timePattern =  Pattern.compile(config.getString("config.timePattern"))
-
+    val jobName = config.getString("config.job0.name") 
+    //Get the pattern of the allowed log time format to detect the start time
+    val timePattern =  Pattern.compile(config.getString("config.job0.timePattern"))
+    //Instanciate the configuration
     val conf: Configuration = new Configuration()
+    //Set the output to CSV format
     conf.set("mapred.textoutputformat.separator", config.getString("config.outputFormat"))
-
-
-    val newPath = new Path(args(0), config.getString("config.logFileName"))
+    //Retrieve the first line of the input log file
+    val newPath = new Path(config.getString("config.inputDir"), config.getString("config.logFileName"))
     val fs = FileSystem.get(conf)
     val input = fs.open(newPath)
     val bf = new BufferedReader(new InputStreamReader(input))
+    //Store the first line of the logs
     val firstLine = bf.readLine()
     input.close();
     bf.close();
     fs.close();
-
+    //Split the first line with spaces
     val time = firstLine.split(" ")
+    //Get the first time of the logs
     val matcher = timePattern.matcher(time(0))
+    //Check if the format is correct and save it to the configuration to pass it to the Mappers and split the log intervals
     if(matcher.matches()){
       val startTimeInterval = matcher.group()
-      System.out.println("MATCH!!!!")
-      System.out.println(startTimeInterval)
+      logger.info("Setting the first log start time to split the intervals on the mappers...")
       conf.set("startTime", startTimeInterval)
     } else {
-      System.out.println("NOT MATCH ")
+      logger.error("First interval not match, wrong input format!")
+      System.exit(0)
     }
     conf.set("splitInterval", config.getString("config.timeWindow"))
-
-    val job0 = Job.getInstance(conf, jobName0)
-    job0.setJarByClass(classOf[TimeMapper])
-    job0.setMapperClass(classOf[TimeMapper])
-    job0.setReducerClass(classOf[TimeReducer])
-
-    job0.setInputFormatClass(classOf[TextInputFormat])
-    job0.setOutputKeyClass(classOf[Text])
-    job0.setOutputValueClass(classOf[Text])
-    job0.setOutputFormatClass(classOf[TextOutputFormat[Text, Text]])
-
-    FileInputFormat.addInputPath(job0, new Path(args(0)))
-    FileOutputFormat.setOutputPath(job0, new Path(args(1)))
-
-    job0.waitForCompletion(true)
-
+    //Set the config for the job
+    val job = Job.getInstance(conf, jobName)
+    //Setup the right scala classes
+    job.setJarByClass(classOf[TimeMapper])
+    job.setMapperClass(classOf[TimeMapper])
+    job.setReducerClass(classOf[TimeReducer])
+    //Setup Mappers and Reducers i/o format
+    job.setInputFormatClass(classOf[TextInputFormat])
+    job.setOutputKeyClass(classOf[Text])
+    job.setOutputValueClass(classOf[Text])
+    job.setOutputFormatClass(classOf[TextOutputFormat[Text, Text]])
+    //Setup input and output directories
+    FileInputFormat.addInputPath(job, new Path(config.getString("config.inputDir")))
+    FileOutputFormat.setOutputPath(job, new Path(config.getString("config.outputDir")))
+    //Start the job
+    logger.info("Running the time interval job...")
+    job.waitForCompletion(config.getBoolean("config.verbose"))
+    logger.info("Time interval job is completed...")
   }
 }

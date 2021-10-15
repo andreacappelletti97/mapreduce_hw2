@@ -17,7 +17,7 @@ object Simulation:
 
   def main(args: Array[String])  = {
     logger.info("Running mapreduce job0")
-    TypeFrequency.Start(args)
+    TimeDriver.Run(args)
     //TypeFrequency.Start(args)
     logger.info("Finished mapreduce job0...")
   }
