@@ -22,15 +22,15 @@ object TimeDriver {
   }
 
   def Run(args: Array[String]) = {
-    val jobName = config.getString("config.job0.name") 
+    val jobName = config.getString("config.timeIntervalJob.name") 
     //Get the pattern of the allowed log time format to detect the start time
-    val timePattern =  Pattern.compile(config.getString("config.job0.timePattern"))
+    val timePattern =  Pattern.compile(config.getString("config.timeIntervalJob.timePattern"))
     //Instanciate the configuration
     val conf: Configuration = new Configuration()
     //Set the output to CSV format
     conf.set("mapred.textoutputformat.separator", config.getString("config.outputFormat"))
     //Retrieve the first line of the input log file
-    val newPath = new Path(config.getString("config.inputDir"), config.getString("config.logFileName"))
+    val newPath = new Path(config.getString("config.timeIntervalJob.inputDir"), config.getString("config.timeIntervalJob.logFileName"))
     val fs = FileSystem.get(conf)
     val input = fs.open(newPath)
     val bf = new BufferedReader(new InputStreamReader(input))
@@ -52,7 +52,7 @@ object TimeDriver {
       logger.error("First interval not match, wrong input format!")
       System.exit(0)
     }
-    conf.set("splitInterval", config.getString("config.timeWindow"))
+    conf.set("splitInterval", config.getString("config.timeIntervalJob.timeWindow"))
     //Set the config for the job
     val job = Job.getInstance(conf, jobName)
     //Setup the right scala classes
@@ -65,8 +65,8 @@ object TimeDriver {
     job.setOutputValueClass(classOf[Text])
     job.setOutputFormatClass(classOf[TextOutputFormat[Text, Text]])
     //Setup input and output directories
-    FileInputFormat.addInputPath(job, new Path(config.getString("config.inputDir")))
-    FileOutputFormat.setOutputPath(job, new Path(config.getString("config.outputDir")))
+    FileInputFormat.addInputPath(job, new Path(config.getString("config.timeIntervalJob.inputDir")))
+    FileOutputFormat.setOutputPath(job, new Path(config.getString("config.timeIntervalJob.outputDir")))
     //Start the job
     logger.info("Running the time interval job...")
     job.waitForCompletion(config.getBoolean("config.verbose"))
