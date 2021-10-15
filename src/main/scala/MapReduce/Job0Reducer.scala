@@ -8,7 +8,8 @@ import collection.convert.ImplicitConversions.`iterable AsScalaIterable`
 class Job0Reducer extends Reducer[Text,IntWritable,Text,IntWritable] {
 
   override def reduce(key: Text, values: java.lang.Iterable[IntWritable], context:Reducer[Text, IntWritable, Text, IntWritable]#Context): Unit = {
-    System.out.println("enter reducer")
+    val sum = values.foldLeft(0) { (m,x) => m + x.get }
+    context.write(key, new IntWritable(sum))
   }
 
 }
