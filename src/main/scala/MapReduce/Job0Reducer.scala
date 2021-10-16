@@ -22,11 +22,7 @@ class Job0Reducer extends Reducer[Text,Text,Text,Text] {
     }
     return sum
   }
-
-  def createList(myValueList : List[Int], iteration : Integer): Unit ={
-    if(iteration > 0) return myValueList
-
-  }
+  
 
   override def reduce(key: Text, values: java.lang.Iterable[Text], context:Reducer[Text, Text, Text, Text]#Context): Unit = {
     System.out.println("enter with key " + key)

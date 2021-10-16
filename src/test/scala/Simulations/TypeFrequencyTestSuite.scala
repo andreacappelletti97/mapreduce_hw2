@@ -1,6 +1,6 @@
 package Simulations
 
-import Jobs.TypeFrequency.config
+import Examples.TypeFrequency.config
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 

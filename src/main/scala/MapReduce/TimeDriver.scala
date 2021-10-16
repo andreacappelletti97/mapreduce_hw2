@@ -1,7 +1,6 @@
 package MapReduce
 
 import HelperUtils.{CreateLogger, ObtainConfigReference}
-import Jobs.TypeFrequency
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.hadoop.io.{IntWritable, Text}
@@ -15,13 +14,13 @@ import java.util.regex.Pattern
 class TimeDriver
 
 object TimeDriver {
-  val logger = CreateLogger(classOf[TypeFrequency])
+  val logger = CreateLogger(classOf[TimeDriver])
   val config = ObtainConfigReference("config") match {
     case Some(value) => value
     case None => throw new RuntimeException("Cannot obtain a reference to the config data.")
   }
 
-  def Run(args: Array[String]) = {
+  def Run() = {
     val jobName = config.getString("config.timeIntervalJob.name") 
     //Get the pattern of the allowed log time format to detect the start time
     val timePattern =  Pattern.compile(config.getString("config.timeIntervalJob.timePattern"))

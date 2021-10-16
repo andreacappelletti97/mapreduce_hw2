@@ -20,6 +20,8 @@ While writing the simulations the following best practices has been adopted
 - No while or for loop is present, instead recursive functions are largely used into the project.
 
 
+- Modular architecture (code is divided by module to enhance mainteinability)
+
 ## Installation
 There are mainly two ways to run them: through IntelliJ or via command line.
 

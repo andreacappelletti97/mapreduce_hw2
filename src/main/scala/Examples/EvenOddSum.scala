@@ -1,7 +1,7 @@
-package Jobs
+package Examples
 
 import HelperUtils.CreateLogger
-import Jobs.WordCount.{Map, Reduce}
+import Examples.WordCount.{Map, Reduce}
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.{IntWritable, LongWritable, Text}
 import org.apache.hadoop.mapred.{FileInputFormat, FileOutputFormat, JobClient, JobConf, MapReduceBase, Mapper, OutputCollector, Reducer, Reporter, TextInputFormat, TextOutputFormat}

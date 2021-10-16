@@ -1,5 +1,4 @@
 import HelperUtils.{CreateLogger, ObtainConfigReference}
-import Jobs.TypeFrequency
 import MapReduce.{Job0Driver, Job1Driver, Job2Driver, TimeDriver}
 import com.typesafe.config.ConfigFactory
 import org.apache.hadoop.io.{IntWritable, Text}
@@ -16,13 +15,12 @@ object MainDriver:
   }
 
   def main(args: Array[String])  = {
-    logger.info("Running mapreduce job0")
-    //TimeDriver.Run(args)
-    //Job0Driver.Run(args)
-    //Job1Driver.Run(args)
-    Job2Driver.Run(args)
-    //TypeFrequency.Start(args)
-    logger.info("Finished mapreduce job0...")
+    logger.info("Running mapreduce jobs")
+    TimeDriver.Run()
+    Job0Driver.Run()
+    Job1Driver.Run()
+    Job2Driver.Run()
+    logger.info("Finished mapreduce jobs...")
   }
 
 class MainDriver

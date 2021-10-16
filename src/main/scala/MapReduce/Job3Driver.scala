@@ -1,7 +1,6 @@
 package MapReduce
 
 import HelperUtils.{CreateLogger, ObtainConfigReference}
-import Jobs.TypeFrequency
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.{IntWritable, Text}
@@ -12,13 +11,13 @@ import org.apache.hadoop.mapreduce.lib.output.{FileOutputFormat, TextOutputForma
 class Job3Driver
 
 object Job3Driver {
-  val logger = CreateLogger(classOf[TypeFrequency])
+  val logger = CreateLogger(classOf[Job3Driver])
   val config = ObtainConfigReference("config") match {
     case Some(value) => value
     case None => throw new RuntimeException("Cannot obtain a reference to the config data.")
   }
 
-  def Run(args: Array[String]) = {
+  def Run() = {
     val jobName = config.getString("config.job3.name")
     //Instanciate the configuration
     val conf: Configuration = new Configuration()

@@ -1,4 +1,4 @@
-package Jobs
+package Examples
 
 import HelperUtils.{CreateLogger, ObtainConfigReference}
 import org.apache.hadoop.fs.Path

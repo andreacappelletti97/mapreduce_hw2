@@ -1,7 +1,6 @@
 package MapReduce
 
 import HelperUtils.{CreateLogger, ObtainConfigReference}
-import Jobs.TypeFrequency
 import org.apache.hadoop.io.{IntWritable, LongWritable, Text}
 import org.apache.hadoop.mapreduce.Mapper
 
@@ -10,7 +9,7 @@ import java.io.IOException
 import java.util.Iterator
 
 class Job0Mapper extends Mapper[LongWritable, Text, Text, Text] {
-  val logger = CreateLogger(classOf[TypeFrequency])
+  val logger = CreateLogger(classOf[Job0Mapper])
   val config = ObtainConfigReference("config") match {
     case Some(value) => value
     case None => throw new RuntimeException("Cannot obtain a reference to the config data.")

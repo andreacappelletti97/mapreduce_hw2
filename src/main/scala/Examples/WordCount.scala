@@ -1,4 +1,4 @@
-package Jobs
+package Examples
 
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.{IntWritable, LongWritable, Text}
