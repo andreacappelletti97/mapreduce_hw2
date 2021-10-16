@@ -29,7 +29,6 @@ class TimeMapper extends Mapper[LongWritable, Text, Text, Text] {
     val startDate = dateFormat.parse(config.getString("config.timeIntervalJob.standardDate") + startTime);
     val dif = ((currentDate.getTime() - startDate.getTime()) / splitInterval).round
     context.write(new Text(dif.toString), value)
-
   }
 
 }

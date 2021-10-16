@@ -1,14 +1,14 @@
 import HelperUtils.{CreateLogger, ObtainConfigReference}
 import Jobs.TypeFrequency
-import MapReduce.{Job0Driver, TimeDriver}
+import MapReduce.{Job0Driver, Job1Driver, TimeDriver}
 import com.typesafe.config.ConfigFactory
 import org.apache.hadoop.io.{IntWritable, Text}
 import org.apache.hadoop.mapred.{JobConf, TextOutputFormat}
 import org.apache.hadoop.mapreduce.Job
 import org.slf4j.LoggerFactory
 
-object Simulation:
-  val logger = CreateLogger(classOf[Simulation])
+object MainDriver:
+  val logger = CreateLogger(classOf[MainDriver])
 
   val config = ObtainConfigReference("config") match {
     case Some(value) => value
@@ -19,8 +19,9 @@ object Simulation:
     logger.info("Running mapreduce job0")
     TimeDriver.Run(args)
     Job0Driver.Run(args)
+    Job1Driver.Run(args)
     //TypeFrequency.Start(args)
     logger.info("Finished mapreduce job0...")
   }
 
-class Simulation
+class MainDriver

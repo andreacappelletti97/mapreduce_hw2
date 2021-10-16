@@ -14,20 +14,29 @@ class Job1Mapper extends Mapper[LongWritable, Text, Text, IntWritable] {
     case None => throw new RuntimeException("Cannot obtain a reference to the config data.")
   }
   private final val one = new IntWritable(1)
+  private final val zero = new IntWritable(0)
   private val timeInterval = new Text()
-  private final val pattern = Pattern.compile(config.getString("config.job1.pattern"))
+  private final val patternType = Pattern.compile(config.getString("config.job1.pattern"))
+  private final val patternLogMessage = Pattern.compile(config.getString("config.logMessagePattern"))
 
   override def map(key: LongWritable, value:Text, context:Mapper[LongWritable, Text, Text, IntWritable]#Context): Unit = {
     val line: String = value.toString
-    val splittedLine = line.split(" ")
-    val interval = splittedLine(0)
+    val splittedLineBySpace = line.split(" ")
+    val splittedLineByComma = line.split(",")
+    val interval = splittedLineByComma(0)
     //Match the ERROR message type
-    splittedLine.foreach { token =>
-      val matcher = pattern.matcher(token)
-      if (matcher.matches()) {
-        //Match the RE pattern
+    splittedLineBySpace.foreach { token =>
+      val matcherType = patternType.matcher(token)
+      val matcherLogMessage = patternLogMessage.matcher(splittedLineBySpace.last)
+      if (matcherType.matches()) {
+        System.out.println("MATCH ERROR!!!!")
         timeInterval.set(interval)
-        context.write(timeInterval, one)
+        //Match the RE pattern
+        if(matcherLogMessage.matches()){
+          context.write(timeInterval, one)
+        } else {
+          context.write(timeInterval, zero)
+        }
       }
     }
   }

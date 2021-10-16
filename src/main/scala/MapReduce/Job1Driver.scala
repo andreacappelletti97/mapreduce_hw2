@@ -30,14 +30,14 @@ object Job1Driver {
     //Set the config for the job
     val job = Job.getInstance(conf, jobName)
     //Setup the right scala classes
-    job.setJarByClass(classOf[Job0Mapper])
-    job.setMapperClass(classOf[Job0Mapper])
-    job.setReducerClass(classOf[Job0Reducer])
+    job.setJarByClass(classOf[Job1Mapper])
+    job.setMapperClass(classOf[Job1Mapper])
+    job.setReducerClass(classOf[Job1Reducer])
     //Setup Mappers and Reducers i/o format
     job.setInputFormatClass(classOf[TextInputFormat])
     job.setOutputKeyClass(classOf[Text])
-    job.setOutputValueClass(classOf[Text])
-    job.setOutputFormatClass(classOf[TextOutputFormat[Text, Text]])
+    job.setOutputValueClass(classOf[IntWritable])
+    job.setOutputFormatClass(classOf[TextOutputFormat[Text, IntWritable]])
     //Setup input and output directories
     FileInputFormat.addInputPath(job, new Path(config.getString("config.job1.inputDir")))
     FileOutputFormat.setOutputPath(job, new Path(config.getString("config.job1.outputDir")))

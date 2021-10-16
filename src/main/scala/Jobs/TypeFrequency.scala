@@ -63,7 +63,7 @@ object TypeFrequency {
     conf.setInputFormat(classOf[TextInputFormat])
 
     conf.setOutputFormat(classOf[TextOutputFormat[Text, IntWritable]])
-    FileInputFormat.setInputPaths(conf, new Path(args(0)))
+    FileInputFormat.setInputPaths(conf, new Path("input_dir"))
     FileOutputFormat.setOutputPath(conf, new Path(args(1)))
     JobClient.runJob(conf)
     logger.info("FINISH")
