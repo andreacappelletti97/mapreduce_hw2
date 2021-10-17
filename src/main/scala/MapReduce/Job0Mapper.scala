@@ -16,6 +16,7 @@ class Job0Mapper extends Mapper[LongWritable, Text, Text, Text] {
   }
   private final val one = new IntWritable(1)
   private val logLevel = new Text()
+  private val test1 = new Text()
   private final val patternLogType = Pattern.compile(config.getString("config.job0.pattern"))
   private final val patternLogMessage = Pattern.compile(config.getString("config.logMessagePattern"))
 
@@ -27,14 +28,15 @@ class Job0Mapper extends Mapper[LongWritable, Text, Text, Text] {
       val matchLogType = patternLogType.matcher(token)
       val matchLogMessage = patternLogMessage.matcher(splittedBySpace.last)
       if(matchLogType.matches()){
-        logLevel.set(token)
-        //TODO: fix match ... 
+        logLevel.set(timeInterval + "," + token)
         if(matchLogMessage.matches()){
           System.out.println("writing1 ")
-          context.write(new Text(timeInterval + "," + token), new Text("1,1"))
+          test1.set("1,1")
+          context.write(logLevel, test1)
         } else {
           System.out.println("writing2 ")
-          context.write(new Text(timeInterval + "," + token), new Text("1,0"))
+          test1.set("1,0")
+          context.write(logLevel, test1)
         }
       }
     }

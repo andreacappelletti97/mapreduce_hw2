@@ -3,7 +3,7 @@ package MapReduce
 import HelperUtils.{CreateLogger, ObtainConfigReference}
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
-import org.apache.hadoop.io.{IntWritable, Text}
+import org.apache.hadoop.io.{IntWritable, LongWritable, Text}
 import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.lib.input.{FileInputFormat, TextInputFormat}
 import org.apache.hadoop.mapreduce.lib.output.{FileOutputFormat, TextOutputFormat}
@@ -32,8 +32,8 @@ object Job3Driver {
     //Setup Mappers and Reducers i/o format
     job.setInputFormatClass(classOf[TextInputFormat])
     job.setOutputKeyClass(classOf[Text])
-    job.setOutputValueClass(classOf[IntWritable])
-    job.setOutputFormatClass(classOf[TextOutputFormat[Text, IntWritable]])
+    job.setOutputValueClass(classOf[Text])
+    job.setOutputFormatClass(classOf[TextOutputFormat[Text, Text]])
     //Setup input and output directories
     FileInputFormat.addInputPath(job, new Path(config.getString("config.job3.inputDir")))
     FileOutputFormat.setOutputPath(job, new Path(config.getString("config.job3.outputDir")))

@@ -6,7 +6,7 @@ import org.apache.hadoop.mapreduce.Mapper
 
 import java.util.regex.Pattern
 
-class Job1Mapper extends Mapper[LongWritable, Text, Text, IntWritable] {
+class Job1Mapper extends Mapper[LongWritable, Text, LongWritable, IntWritable] {
   val logger = CreateLogger(classOf[Job1Mapper])
   val config = ObtainConfigReference("config") match {
     case Some(value) => value
@@ -14,11 +14,11 @@ class Job1Mapper extends Mapper[LongWritable, Text, Text, IntWritable] {
   }
   private final val one = new IntWritable(1)
   private final val zero = new IntWritable(0)
-  private val timeInterval = new Text()
+  private val timeInterval = new LongWritable()
   private final val patternType = Pattern.compile(config.getString("config.job1.pattern"))
   private final val patternLogMessage = Pattern.compile(config.getString("config.logMessagePattern"))
 
-  override def map(key: LongWritable, value:Text, context:Mapper[LongWritable, Text, Text, IntWritable]#Context): Unit = {
+  override def map(key: LongWritable, value:Text, context:Mapper[LongWritable, Text, LongWritable, IntWritable]#Context): Unit = {
     val line: String = value.toString
     val splittedLineBySpace = line.split(" ")
     val splittedLineByComma = line.split(",")
@@ -28,8 +28,7 @@ class Job1Mapper extends Mapper[LongWritable, Text, Text, IntWritable] {
       val matcherType = patternType.matcher(token)
       val matcherLogMessage = patternLogMessage.matcher(splittedLineBySpace.last)
       if (matcherType.matches()) {
-        System.out.println("MATCH ERROR!!!!")
-        timeInterval.set(interval)
+        timeInterval.set(interval.toLong)
         //Match the RE pattern
         if(matcherLogMessage.matches()){
           context.write(timeInterval, one)

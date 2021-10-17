@@ -4,13 +4,12 @@ import org.apache.hadoop.io.{IntWritable, Text}
 import org.apache.hadoop.mapreduce.Reducer
 import scala.collection.convert.ImplicitConversions.`iterator asScala`
 import collection.convert.ImplicitConversions.`iterable AsScalaIterable`
+import scala.collection.JavaConverters._
 
 class Job0Reducer extends Reducer[Text,Text,Text,Text] {
 
   def sumOperation(values: Iterable[Text], frequency: Boolean): Int = {
     val sum = values.foldLeft(0) { (m,x) =>
-      System.out.println("fold m " + m)
-      System.out.println("fold x " + x)
       val value = x.toString
       if(frequency) {
         val numberOfTypes = Integer.parseInt(value.split(",")(0))
@@ -23,13 +22,13 @@ class Job0Reducer extends Reducer[Text,Text,Text,Text] {
     return sum
   }
   
-
   override def reduce(key: Text, values: java.lang.Iterable[Text], context:Reducer[Text, Text, Text, Text]#Context): Unit = {
-    System.out.println("enter with key " + key)
-    val copy1 = values
-    val copy2 = values
-    val sum = sumOperation(copy1, false)
-    val secondSum = sumOperation(copy2, true)
+    val valuesF = values.map(c => Text(c.toString()))
+    val valuesSeq = valuesF.toSeq
+    val it1 = valuesSeq.toIterable
+    val it2 = valuesSeq.toIterable
+    val sum = sumOperation(it1, true)
+    val secondSum = sumOperation(it2, false)
     context.write(key, new Text(sum + "," + secondSum))
   }
 
