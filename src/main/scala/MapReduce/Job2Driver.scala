@@ -40,8 +40,8 @@ object Job2Driver {
     FileInputFormat.addInputPath(job, new Path(config.getString("config.job2.inputDir")))
     FileOutputFormat.setOutputPath(job, new Path(config.getString("config.job2.outputDir")))
     //Start the job
-    logger.info("Running the time interval job...")
+    logger.info("Running job2...")
     job.waitForCompletion(config.getBoolean("config.verbose"))
-    logger.info("Time interval job is completed...")
+    logger.info("job2 is completed...")
   }
 }

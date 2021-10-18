@@ -17,8 +17,8 @@ class Job3Mapper extends Mapper[LongWritable, Text, Text, Text] {
 
   override def map(key: LongWritable, value:Text, context:Mapper[LongWritable, Text, Text, Text]#Context): Unit = {
     val line = value.toString
-    val logMessage = line.split(" ").last
-    line.split(" ").foreach(token =>
+    val logMessage = line.split(config.getString("config.splitBySpace")).last
+    line.split(config.getString("config.splitBySpace")).foreach(token =>
       val matcherType = patternType.matcher(token)
       //Match the type --> INFO, DEBUG, ERROR ...
       if (matcherType.matches()) {
@@ -27,7 +27,7 @@ class Job3Mapper extends Mapper[LongWritable, Text, Text, Text] {
         if(!listOfPatternMatch.isEmpty){
           val lengthList = listOfPatternMatch.map(t => t.length)
           lengthList.foreach(l =>
-            context.write(Text(token), Text(logMessage + ",,,,," + l.toString))
+            context.write(Text(token), Text(logMessage + config.getString("config.logMessageSeparator") + l.toString))
           )
         }
       }

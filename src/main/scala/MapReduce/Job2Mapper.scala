@@ -17,15 +17,16 @@ class Job2Mapper extends Mapper[LongWritable, Text, Text, IntWritable] {
   private val logLevel = new Text()
 
   override def map(key: LongWritable, value:Text, context:Mapper[LongWritable, Text, Text, IntWritable]#Context): Unit = {
+    logger.info("Job2 mapper has started...")
     val line: String = value.toString
-    line.split(" ").foreach { token =>
+    line.split(config.getString("config.splitBySpace")).foreach { token =>
       val matcher = pattern.matcher(token)
       if(matcher.matches()){
         logLevel.set(token)
         context.write(logLevel, one)
       }
     }
-  
+    logger.info("Job2 mapper has ended...")
   }
 
 }

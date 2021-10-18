@@ -35,7 +35,7 @@ to compute the interval of a given time interval.
 The output is all the log messages with the defined time interval.
 
 ### Mapper
-The mapper is into the <code>TimeMapper</code> class.
+The mapper is located into the <code>TimeMapper</code> class.
 
 It basically takes the log lines one by one, detect the timestamp of the log,
 computes the time interval and return the time interval as a key and the entire log message as a value.
@@ -48,7 +48,7 @@ key : 1024
 value: 20:18:54.482 [scala-execution-context-global-90] INFO  HelperUtils.Parameters$ - ;kNI&V%v<c#eSDK@lPY(
 ```
 ### Reducer
-The reducer is into the <code>TimeReducer</code> class.
+The reducer is located into the <code>TimeReducer</code> class.
 It takes each key from the mapper and simply output all the values computed.
 
 ### Input
@@ -71,7 +71,7 @@ then fed as input in the next jobs.
 > Compute a spreadsheet or an CSV file that shows the distribution of different types of messages across predefined time intervals and injected string instances of the designated regex pattern for these log message types.
 
 ### Mapper
-The mapper is into the <code>Job0Mapper</code> class.
+The mapper is located into the <code>Job0Mapper</code> class.
 
 It basically takes each log message as input with the time interval computed in the previous job.
 It checks if the log message contains the regural expression we are looking for and print out the result.
@@ -93,7 +93,9 @@ value: 1,0
 In this second example, the log message does not contain the regex.
 
 ### Reducer
-The reducer performs a <code>FoldLeft</code> operation to sum both the frequency of the log type in the interval and the
+The reducer is located into the <code>Job0Reducer</code> class.
+
+It performs a <code>FoldLeft</code> operation to sum both the frequency of the log type in the interval and the
 regex pattern matches.
 
 ### Input
@@ -117,7 +119,7 @@ the log type frequency into that interval and finally the number of matches.
 
 
 ### Mapper
-The mapper is into the <code>Job1Mapper</code> class.
+The mapper is located into the <code>Job1Mapper</code> class.
 
 It basically takes the input log message line and creates the time interval combined with the log type as a key.
 The log message type in this case is just ERROR, because we are looking for ERRROs only.
@@ -129,7 +131,9 @@ value: 1
 ```
 
 ### Reducer
-The reducer takes as input the time intervals with the log type as key and sum all the values found with
+The reducer is located into the <code>Job1Reducer</code> class.
+
+It takes as input the time intervals with the log type as key and sum all the values found with
 a FoldLeft function.
 
 ### Input
@@ -155,17 +159,106 @@ The reason behind my decision is not to run another time consuming mapreduce job
 # Job2
 > For each message type you will produce the number of the generated log messages.
 ### Mapper
+The mapper is located into the <code>Job2Mapper</code> class.
+It takes each line of the log file as input, detects the log type and output the frequency with an IntWritable if the log type is present.
+```
+INFO,1
+INFO,1
+DEBUG,1
+DEBUG,1
+ERROR,1
+```
+The output is a CSV with the log type and 1 meaning that it is present and it has to be counted.
 ### Reducer
+The reducer is located into the <code>Job2Reducer</code> class.
+It performs a <code>foldLeft</code> operation to compute the overall sum.
+
 ### Input
+The input of this mapreduce job is taken from the input_dir/ directory because we do not have to take into account different time intervals.
+
+We are computing the overall frequency of the log types into our input logs.
+
 ### Output
+
+The output of this mapreduce job is a CSV file with the number of log types contained into the initial log file.
+
+The output is store into <code>output_dir/job2 </code> directory.
+```
+DEBUG,7
+ERROR,5
+INFO,66
+WARN,28
+```
 
 # Job3
 > Produce the number of characters in each log message for each log message type that contain the highest number of characters in the detected instances of the designated regex pattern.
 
 ### Mapper
+The mapper is located into the <code>Job3Mapper</code> class.
+It takes as input the initial log file because here we do not consider time intervals.
+
+First it detects the log message type (INFO, WARN, DEBUG ...), the looks for occurrences of
+the regex in the log message. 
+
+Once it finds all the occurrences it outputs the value in the following way:
+
+Let's consider this log message: 
+```
+20:13:55.323 [scala-execution-context-global-90] DEBUG HelperUtils.Parameters$ - 4Xm.~sG~o[aLD.ml+:vj7e3uZA8ibg2M9ice0O5hbf0VQmO)f9%,]qd8p<p(J[r2aS\.A8ibg2M9ice0O5hbf0A8ibg2M9ice0O5hbf0
+```
+And the regex pattern
+```regexp
+([a-c][e-g][0-3]|[A-Z][5-9][f-w]){5,15}
+```
+Specified into the config as <code>logMessagePattern</code>.
+
+In this case we match the regex two times
+```
+A8ibg2M9ice0O5hbf0
+A8ibg2M9ice0O5hbf0A8ibg2M9ice0O5hbf0
+```
+The length of the matches are 18 and 36 respectively.
+
+The mapper output will be the log type as key and as value the log message with concatenated the length of the match of the regex.
+
+The concatenation starts after the characters <code>===!!!===</code>, specified in the config as <code>logMessageSeparator</code>
+```
+key: INFO
+value: 4Xm.~sG~o[aLD.ml+:vj7e3uZA8ibg2M9ice0O5hbf0VQmO)f9%,]qd8p<p(J[r2aS\.A8ibg2M9ice0O5hbf0A8ibg2M9ice0O5hbf0===!!!===18
+```
+```
+key: INFO
+value: 4Xm.~sG~o[aLD.ml+:vj7e3uZA8ibg2M9ice0O5hbf0VQmO)f9%,]qd8p<p(J[r2aS\.A8ibg2M9ice0O5hbf0A8ibg2M9ice0O5hbf0===!!!===36
+```
+
+
 ### Reducer
+The reducer is located into the <code>Job3Reducer</code> class.
+It performs a <code>reduceLeft</code> operation to compute the maximum length of the matches.
+
+Once the reducer finds the max between all the same log types it return the length of the log message.
+
+In the example above, if we suppose that the message is the one with the longest regex match of 36 chars in the log type, it would return the length of
+```
+4Xm.~sG~o[aLD.ml+:vj7e3uZA8ibg2M9ice0O5hbf0VQmO)f9%,]qd8p<p(J[r2aS\.A8ibg2M9ice0O5hbf0A8ibg2M9ice0O5hbf0
+```
+
+That is 104 chars.
+
 ### Input
+The input of this mapreduce job is taken from the input_dir/ directory because we do not have to take into account different time intervals.
+
+
 ### Output
+
+The output of this mapreduce job is a CSV file with the length of log message with the max pattern match length contained into the initial log file.
+
+The output is store into <code>output_dir/job3 </code> directory.
+```
+DEBUG,68
+ERROR,21
+INFO,45
+```
 
 # AWS YouTube Video
 
