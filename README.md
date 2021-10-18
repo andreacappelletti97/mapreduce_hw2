@@ -261,9 +261,17 @@ INFO,45
 ```
 
 # AWS YouTube Video
+In order to run the mapreduce job on Amazon AWS I have used
+the account of my startup Nuklex (www.nuklex.com) as agreed with Professor Mark.
+
+The reason is that I have 5.000$ dollar credit to use that I got for being selected at Y Combinator.
+
 In this video we consider a large input log file.
 
 The size is around 1GB of data.
+
+Amazon EMR deploy:
+
 
 # Run the mapreduce
 The section below explains how to run the mapreduce jobs present into this project.
