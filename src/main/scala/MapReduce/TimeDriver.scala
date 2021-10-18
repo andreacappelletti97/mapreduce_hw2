@@ -41,7 +41,7 @@ object TimeDriver {
     bf.close();
     fs.close();
     //Split the first line with spaces
-    val time = firstLine.split(" ")
+    val time = firstLine.split(config.getString("config.splitBySpace"))
     //Get the first time of the logs
     val matcher = timePattern.matcher(time(0))
     //Check if the format is correct and save it to the configuration to pass it to the Mappers and split the log intervals
