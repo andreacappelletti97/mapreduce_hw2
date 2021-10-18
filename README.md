@@ -7,18 +7,25 @@ Andrea Cappelletti
 UIN: 674197701   
 acappe2@uic.edu
 
-# AWS YouTube Video
-
 
 # TimeInterval job
 This job leads to the creation of different time intervals
 to analyse the overall logs.
-In order to create the interval, the very first log message is taken into account.
-We decide time window in milliseconds, that we can set from the config
+In order to create the interval, the very first log message is taken into account and sent to every mapper through a configuration param.
+
+
+
+Next step is to decide time window in milliseconds, that we can set from the config
 ```
 timeWindow = 5000
 ```
 The TimeInterval job will automatically generate our interval for us.
+In fact, once the mapper knows the first time interval and the time window, it is easy
+to compute the interval of a given time interval.
+```
+time_interval = (current_time - start_time)/ time_windows
+```
+
 ### Output
 Indeed the output will be a CSV with the time interval and the log message
 ```
@@ -48,6 +55,8 @@ then fed as input in the next jobs.
 > Produce the number of characters in each log message for each log message type that contain the highest number of characters in the detected instances of the designated regex pattern.
 
 ### Output
+
+# AWS YouTube Video
 
 ## Programming technology
 All the simulations has been written in Scala using a Functional Programming approach.
