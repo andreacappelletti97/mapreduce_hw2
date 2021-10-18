@@ -261,6 +261,9 @@ INFO,45
 ```
 
 # AWS YouTube Video
+In this video we consider a large input log file.
+
+The size is around 1GB of data.
 
 # Run the mapreduce
 The section below explains how to run the mapreduce jobs present into this project.
@@ -340,7 +343,7 @@ In this section you will find detailed steps that will lead you there.
 Disclaimer, this configuration runs with the following versions
 - macOS Big Sur (11.6)
 - HDP_3.0.1
-- VmWare Fusion
+- VmWare Fusion (12.1.2)
 
 You will have to adapt this guide to your configuration accordling.
 
@@ -363,7 +366,7 @@ Where <code>172.16.67.2</code> is the ip address of your running sandbox.
 In this way you can call ssh, scp and other useful command directly with the host address<code> sandbox-hdp.hortonworks.com </code>.
 
 In order to run the entire mapreduce in the testing environment 
-I wrote a bash script that will automatically run the commands for you and it's located in the root of the project named <code>deploy.sh </code>.
+I wrote a bash script that will automatically run the commands for you and it's located in the root of the project named <code>hortons_deploy.sh </code>.
 
 ```shell
 #!/bin/bash
@@ -424,12 +427,15 @@ Then run
 ```shell
 #!/bin/bash
 
-
 JAR="acappe2_hw2.jar"
 
+#Clean up input_dir
+hadoop fs -rm -rf input_dir
+hadoop fs -mkdir input_dir
+
 #Clean up
-hadoop fs -rm -r output_dir
-./clean_output.sh
+hadoop fs -rm -rf output_dir
+rm -rf output_dir
 
 #Run hadoop
 hadoop jar $JAR input_dir output_dir
