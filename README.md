@@ -277,17 +277,31 @@ the right system and version configuration in the<code> build.sbt </code> and <c
 
 Both the instances are provided into this repository. 
 
-It may happen that you have to change them according to your system setup and java version. In order to do that
-refer to the official documentation.
+It may happen that you have to change them according to your system setup and java version. 
 
-There are mainly two ways to build the jobs: through IntelliJ or via command line.
+In order to do that refer to the official documentation.
 
-This section explains how to properly build them.
+You can either build the project and run it on AWS or Hortons Sandbox, or you can run it locally.
+
+In order to run it locally, hadoop has to be installed.
 
 In order to build the project we have first to clone this repo
 ```
 git clone https://github.com/andreacappelletti97/mapreduce_hw2.git
 ```
+
+Please note that in order to run the mapreduce locally you should create an <code> input_dir </code> in the root directory of the project and put inside it the log file you want to parse with the jobs.
+
+The log file should be named <code>input.log </code>, or according to the configuration of your project.
+
+You will find the output of the mapreduce in the root directory of the project under <code>output_dir</code>.
+
+### IntelliJ
+Import the project via VCS or from the clone folder.
+
+Run the <code>MainDriver</code> class
+
+![alt text](assets/run.png)
 
 ### Command Line
 In order to build the jobs from cli we need to use sbt
@@ -299,7 +313,9 @@ sbt clean compile test
 ```
 
 The output should be the following
+```
 
+```
 
 Create the jar if you want to run it on AWS or Hortons Sandbox.
 Launch the following command
@@ -310,14 +326,11 @@ The jar can be found under <code> target/scala-3.0.2/acappe2_hw2.jar </code>
 
 You can follow the next section to run it into the testing VMware Vm or the YouTube video to run it on Amazon AWS.
 
-Or alternatevely we can run the project locally with
+Or alternatively we can run the project locally with
 
 ```
 sbt clean compile run
 ```
-Please note that in order to run the mapreduce locally you should create an <code> input_dir </code> in the root directory of the project and put inside it the log file you want to parse with the jobs.
-
-The log file should be named <code>input.log </code>, or according to the configuration of your project.
 
 ## Testing environment
 In order to run the mapreduce jobs you can also setup a test environment with Hortons Sandbox.
@@ -331,7 +344,7 @@ Disclaimer, this configuration runs with the following versions
 
 You will have to adapt this guide to your configuration accordling.
 
-FIrst thing first, download VMWare, the virtual machine environment on which you will run the software stack of Hortons.
+First thing first, download VMWare, the virtual machine environment on which you will run the software stack of Hortons.
 You can find it directly on the UIC web store: http://go.uic.edu/csvmware
 
 After the download is completed, run the installation procedure.  
@@ -339,6 +352,8 @@ After the download is completed, run the installation procedure.
 Once completed, download the hortons sandbox image: https://www.cloudera.com/tutorials/getting-started-with-hdp-sandbox.html
 
 Install the image just downloaded on VMWare and run the virtual machine.
+
+![alt text](assets/vmWare.png)
 
 Just to simplify a little things, you can add to your <code>/etc/hosts</code> the line below
 ```
@@ -348,10 +363,12 @@ Where <code>172.16.67.2</code> is the ip address of your running sandbox.
 In this way you can call ssh, scp and other useful command directly with the host address<code> sandbox-hdp.hortonworks.com </code>.
 
 In order to run the entire mapreduce in the testing environment 
-I wrote a bash script that will automatically run the commands for you and its located in the root of the project named <code>deploy.sh </code>.
+I wrote a bash script that will automatically run the commands for you and it's located in the root of the project named <code>deploy.sh </code>.
 
 ```shell
 #!/bin/bash
+
+scp -P 2222 input_dir/input.log root@sandbox-hdp.hortonworks.com:~/
 
 sbt clean compile assembly
 
@@ -362,9 +379,17 @@ scp -P 2222 acappe2_hw2.jar root@sandbox-hdp.hortonworks.com:~/
 ssh root@sandbox-hdp.hortonworks.com -p 2222
 ```
 I will break it down.
+First thing first, we have our VMWare running the Hortons Sandbox.
 
-First thing first, we have our VMWare running with Hortons.  
-Let's compile our jar. 
+We have to copy our test input log file into the VM.
+
+In order to do so, we run
+```
+scp -P 2222 input_dir/input.log root@sandbox-hdp.hortonworks.com:~/
+
+```
+
+Second, let's compile our jar. 
 
 A detailed guide on how to do so is already explained in the section above.
 
@@ -388,6 +413,30 @@ Log into the Virtual Machine
 
 ```
 ssh root@sandbox-hdp.hortonworks.com -p 2222
+```
+Push the input.log into HDFS running
+```shell
+hadoop fs -put input.log input_dir
+hadoop fs -ls input_dir/
+```
+
+Then run
+```shell
+#!/bin/bash
+
+
+JAR="acappe2_hw2.jar"
+
+#Clean up
+hadoop fs -rm -r output_dir
+./clean_output.sh
+
+#Run hadoop
+hadoop jar $JAR input_dir output_dir
+
+#Get the output
+hadoop fs -get output_dir/
+
 ```
 
 ## Programming technology

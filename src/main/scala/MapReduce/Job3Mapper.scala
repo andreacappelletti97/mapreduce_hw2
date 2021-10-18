@@ -16,6 +16,7 @@ class Job3Mapper extends Mapper[LongWritable, Text, Text, Text] {
   private final val patternLogMessage = config.getString("config.logMessagePattern").r
 
   override def map(key: LongWritable, value:Text, context:Mapper[LongWritable, Text, Text, Text]#Context): Unit = {
+    logger.info("Job3 mapper has started...")
     val line = value.toString
     val logMessage = line.split(config.getString("config.splitBySpace")).last
     line.split(config.getString("config.splitBySpace")).foreach(token =>
@@ -32,6 +33,7 @@ class Job3Mapper extends Mapper[LongWritable, Text, Text, Text] {
         }
       }
     )
+    logger.info("Job3 mapper has ended...")
   }
 
 }

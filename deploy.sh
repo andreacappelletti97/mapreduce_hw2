@@ -1,5 +1,7 @@
 #!/bin/bash
 
+scp -P 2222 input_dir/input.log root@sandbox-hdp.hortonworks.com:~/
+
 sbt clean compile assembly
 
 cd target/scala-3.0.2/
