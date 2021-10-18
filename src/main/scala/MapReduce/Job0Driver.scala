@@ -12,7 +12,9 @@ import java.io.{BufferedReader, InputStreamReader}
 import java.util.regex.Pattern
 
 class Job0Driver
-
+/*
+This job finds out the frequency of the logMessagePattern for each log type in each time interval
+*/
 object Job0Driver {
   val logger = CreateLogger(classOf[Job0Driver])
   val config = ObtainConfigReference("config") match {

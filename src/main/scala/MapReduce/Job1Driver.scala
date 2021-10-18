@@ -1,7 +1,6 @@
 package MapReduce
 
 import HelperUtils.{CreateLogger, ObtainConfigReference}
-import Sorting.DescendingKeyComparator
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.hadoop.io.{IntWritable, LongWritable, Text, WritableComparable, WritableComparator}
@@ -13,9 +12,9 @@ import java.io.{BufferedReader, InputStreamReader}
 import java.util.regex.Pattern
 
 class Job1Driver
-
-
-
+/*
+This job finds out the frequency in desc order for each time interval of logMessagePattern in the ERROR log type
+*/
 object Job1Driver {
   val logger = CreateLogger(classOf[Job1Driver])
   val config = ObtainConfigReference("config") match {

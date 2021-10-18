@@ -14,4 +14,10 @@ class TimeDriverTestSuite extends AnyFlatSpec with Matchers {
   it should "Set the right output format CSV" in {
     config.getString("config.outputFormat") shouldBe ","
   }
+  
+  it should  "Set the right type of logMessagePattern" in {
+    config.getString("config.logMessagePattern") shouldBe "([a-c][e-g][0-3]|[A-Z][5-9][f-w]){5,15}"
+  }
+
+
 }

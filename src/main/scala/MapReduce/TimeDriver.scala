@@ -12,7 +12,9 @@ import java.io.{BufferedReader, InputStreamReader}
 import java.util.regex.Pattern
 
 class TimeDriver
-
+/*
+This job divides and create time intervals
+*/
 object TimeDriver {
   val logger = CreateLogger(classOf[TimeDriver])
   val config = ObtainConfigReference("config") match {

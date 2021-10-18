@@ -16,10 +16,10 @@ object MainDriver:
 
   def main(args: Array[String])  = {
     logger.info("Running mapreduce jobs")
-    //TimeDriver.Run()
-    //Job0Driver.Run()
-    //Job1Driver.Run()
-    //Job2Driver.Run()
+    TimeDriver.Run()
+    Job0Driver.Run()
+    Job1Driver.Run()
+    Job2Driver.Run()
     Job3Driver.Run()
     logger.info("Finished mapreduce jobs...")
   }

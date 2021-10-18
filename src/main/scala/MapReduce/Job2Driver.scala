@@ -9,7 +9,9 @@ import org.apache.hadoop.mapreduce.lib.input.{FileInputFormat, TextInputFormat}
 import org.apache.hadoop.mapreduce.lib.output.{FileOutputFormat, TextOutputFormat}
 
 class Job2Driver
-
+/*
+This job finds out the overall frequency of the log types in the log files
+*/
 object Job2Driver {
   val logger = CreateLogger(classOf[Job2Driver])
   val config = ObtainConfigReference("config") match {

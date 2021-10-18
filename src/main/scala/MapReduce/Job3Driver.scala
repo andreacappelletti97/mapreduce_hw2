@@ -9,7 +9,9 @@ import org.apache.hadoop.mapreduce.lib.input.{FileInputFormat, TextInputFormat}
 import org.apache.hadoop.mapreduce.lib.output.{FileOutputFormat, TextOutputFormat}
 
 class Job3Driver
-
+/*
+This job finds out the logMessagePattern longest match per type and printout the entire message length
+*/
 object Job3Driver {
   val logger = CreateLogger(classOf[Job3Driver])
   val config = ObtainConfigReference("config") match {
