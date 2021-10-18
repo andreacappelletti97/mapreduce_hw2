@@ -176,7 +176,7 @@ Before running the mapreduce, take into account the following assumptions.
 For simplicity, we consider just one entire log file, the name has to be specified into the config of our project in order to retrieve
 the first line of the file and then create the time intervals.
 
-The standard log file used to run the mapreduce so far is named input.log and is placed into the input_dir/ directory in HDFS.
+The standard log file used to run the mapreduce so far is named <code>input.log</code> and is placed into the <code>input_dir/</code> directory in HDFS.
 
 ## Installation
 Please note that in order to properly build the jar, you have to setup
@@ -193,7 +193,7 @@ This section explains how to properly build them.
 
 In order to build the project we have first to clone this repo
 ```
-git clone https://github.com/andreacappelletti97/cloudsimplus_hw1.git
+git clone https://github.com/andreacappelletti97/mapreduce_hw2.git
 ```
 
 ### Command Line
@@ -208,11 +208,14 @@ sbt clean compile test
 The output should be the following
 
 
-Create the jar of the project launching the following command
+Create the jar if you want to run it on AWS or Hortons Sandbox.
+Launch the following command
 ```
 sbt clean compile assembly
 ```
+The jar can be found under <code> target/scala-3.0.2/acappe2_hw2.jar </code> 
 
+You can follow the next section to run it into the testing VMware Vm or the YouTube video to run it on Amazon AWS.
 
 Or alternatevely we can run the project locally with
 
@@ -220,13 +223,15 @@ Or alternatevely we can run the project locally with
 sbt clean compile run
 ```
 Please note that in order to run the mapreduce locally you should create an <code> input_dir </code> in the root directory of the project and put inside it the log file you want to parse with the jobs.
+
 The log file should be named <code>input.log </code>, or according to the configuration of your project.
 
 ## Testing environment
 In order to run the mapreduce jobs you can also setup a test environment with Hortons Sandbox.
+
 In this section you will find detailed steps that will lead you there.
 
-Disclamer, this configuration runs with the following versions
+Disclaimer, this configuration runs with the following versions
 - macOS Big Sur (11.6)
 - HDP_3.0.1
 - VmWare Fusion
@@ -235,20 +240,34 @@ You will have to adapt this guide to your configuration accordling.
 
 FIrst thing first, download VMWare, the virtual machine environment on which you will run the software stack of Hortons.
 You can find it directly on the UIC web store: http://go.uic.edu/csvmware
-After the download is completed, run the installation procedure.
+
+After the download is completed, run the installation procedure.  
+
 Once completed, download the hortons sandbox image: https://www.cloudera.com/tutorials/getting-started-with-hdp-sandbox.html
+
 Install the image just downloaded on VMWare and run the virtual machine.
 
-Just to simplify a little bit things, you can add to your /etc/hosts the line below
+Just to simplify a little things, you can add to your <code>/etc/hosts</code> the line below
 ```
 172.16.67.2     sandbox-hdp.hortonworks.com
 ```
 Where <code>172.16.67.2</code> is the ip address of your running sandbox.
 In this way you can call ssh, scp and other useful command directly with the host address<code> sandbox-hdp.hortonworks.com </code>.
 
-In order to run the entire mapreduce in the testing enviroment 
+In order to run the entire mapreduce in the testing environment 
 I wrote a bash script that will automatically run the commands for you and its located in the root of the project named <code>deploy.sh </code>.
 
+```shell
+#!/bin/bash
+
+sbt clean compile assembly
+
+cd target/scala-3.0.2/
+
+scp -P 2222 acappe2_hw2.jar root@sandbox-hdp.hortonworks.com:~/
+
+ssh root@sandbox-hdp.hortonworks.com -p 2222
+```
 I will break it down.
 
 First thing first, we have our VMWare running with Hortons.  
