@@ -29,7 +29,7 @@ class Job0Mapper extends Mapper[LongWritable, Text, Text, Text] {
       val matchLogMessage = patternLogMessage.matcher(splittedBySpace.last)
       if(matchLogType.matches()){
         logLevel.set(timeInterval + "," + token)
-        if(matchLogMessage.matches()){
+        if(matchLogMessage.find()){
           System.out.println("writing1 ")
           test1.set("1,1")
           context.write(logLevel, test1)
