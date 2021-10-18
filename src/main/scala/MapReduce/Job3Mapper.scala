@@ -13,7 +13,7 @@ class Job3Mapper extends Mapper[LongWritable, Text, Text, Text] {
   }
   private val logLevel = new Text()
   private final val patternType = Pattern.compile(config.getString("config.job3.pattern"))
-  private final val patternLogMessage = config.getString("config.testMessagePattern").r
+  private final val patternLogMessage = config.getString("config.logMessagePattern").r
 
   override def map(key: LongWritable, value:Text, context:Mapper[LongWritable, Text, Text, Text]#Context): Unit = {
     val line = value.toString
@@ -27,7 +27,7 @@ class Job3Mapper extends Mapper[LongWritable, Text, Text, Text] {
         if(!listOfPatternMatch.isEmpty){
           val lengthList = listOfPatternMatch.map(t => t.length)
           lengthList.foreach(l =>
-            context.write(Text(token), Text(logMessage + "," + l.toString))
+            context.write(Text(token), Text(logMessage + ",,,,," + l.toString))
           )
         }
       }

@@ -32,7 +32,7 @@ object Job1Driver {
     //Set the config for the job
     val job = Job.getInstance(conf, jobName)
     //Order the output in a DESC order by key
-    //job.setSortComparatorClass(classOf[LongWritable.DecreasingComparator])
+    job.setSortComparatorClass(classOf[LongWritable.DecreasingComparator])
     //Setup the right scala classes
     job.setJarByClass(classOf[Job1Mapper])
     job.setMapperClass(classOf[Job1Mapper])

@@ -1,5 +1,5 @@
 import HelperUtils.{CreateLogger, ObtainConfigReference}
-import MapReduce.{Job0Driver, Job1Driver, Job2Driver, Job3Driver, SecondarySortDriver, TimeDriver}
+import MapReduce.{Job0Driver, Job1Driver, Job2Driver, Job3Driver, TimeDriver}
 import com.typesafe.config.ConfigFactory
 import org.apache.hadoop.io.{IntWritable, Text}
 import org.apache.hadoop.mapred.{JobConf, TextOutputFormat}
@@ -19,7 +19,6 @@ object MainDriver:
     //TimeDriver.Run()
     //Job0Driver.Run()
     //Job1Driver.Run()
-    //SecondarySortDriver.Run()
     //Job2Driver.Run()
     Job3Driver.Run()
     logger.info("Finished mapreduce jobs...")
