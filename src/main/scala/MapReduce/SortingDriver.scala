@@ -2,53 +2,47 @@ package MapReduce
 
 import HelperUtils.{CreateLogger, ObtainConfigReference}
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.{FileSystem, Path}
-import org.apache.hadoop.io.{IntWritable, LongWritable, Text, WritableComparable, WritableComparator}
+import org.apache.hadoop.fs.Path
+import org.apache.hadoop.io.{IntWritable, LongWritable, Text}
 import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.lib.input.{FileInputFormat, TextInputFormat}
 import org.apache.hadoop.mapreduce.lib.output.{FileOutputFormat, TextOutputFormat}
-import org.apache.hadoop.io.LongWritable
-import java.io.{BufferedReader, InputStreamReader}
-import java.util.regex.Pattern
 
-class Job1Driver
+class SortingDriver
 /*
-This job finds out the frequency in desc order for each time interval of logMessagePattern in the ERROR log type
+This job finds out the logMessagePattern longest match per type and printout the entire message length
 */
-object Job1Driver {
-  val logger = CreateLogger(classOf[Job1Driver])
+object SortingDriver {
+  val logger = CreateLogger(classOf[SortingDriver])
   val config = ObtainConfigReference("config") match {
     case Some(value) => value
     case None => throw new RuntimeException("Cannot obtain a reference to the config data.")
   }
 
   def Run() = {
-    val jobName = config.getString("config.job1.name")
+    val jobName = config.getString("config.job3.name")
     //Instanciate the configuration
     val conf: Configuration = new Configuration()
     //Set the output to CSV format
     conf.set("mapred.textoutputformat.separator", config.getString("config.outputFormat"))
     //Set the config for the job
     val job = Job.getInstance(conf, jobName)
-    //Order the output in a DESC order by key
-    //job.setSortComparatorClass(classOf[LongWritable.DecreasingComparator])
+    job.setSortComparatorClass(classOf[LongWritable.DecreasingComparator])
     //Setup the right scala classes
-    job.setJarByClass(classOf[Job1Mapper])
-    job.setMapperClass(classOf[Job1Mapper])
-    job.setReducerClass(classOf[Job1Reducer])
+    job.setJarByClass(classOf[SortingMapper])
+    job.setMapperClass(classOf[SortingMapper])
+    job.setReducerClass(classOf[SortingReducer])
     //Setup Mappers and Reducers i/o format
     job.setInputFormatClass(classOf[TextInputFormat])
     job.setOutputKeyClass(classOf[LongWritable])
     job.setOutputValueClass(classOf[IntWritable])
     job.setOutputFormatClass(classOf[TextOutputFormat[LongWritable, IntWritable]])
     //Setup input and output directories
-    FileInputFormat.addInputPath(job, new Path(config.getString("config.job1.inputDir")))
-    FileOutputFormat.setOutputPath(job, new Path(config.getString("config.job1.outputDir")))
+    FileInputFormat.addInputPath(job, new Path("output_dir/job1"))
+    FileOutputFormat.setOutputPath(job, new Path("output_dir/sorting"))
     //Start the job
-    logger.info("Running job1...")
+    logger.info("Running Sorting...")
     job.waitForCompletion(config.getBoolean("config.verbose"))
-    logger.info("job1 is completed...")
+    logger.info("Sorting is completed...")
   }
-
 }
-

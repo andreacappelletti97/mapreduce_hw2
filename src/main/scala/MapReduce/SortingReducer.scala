@@ -7,16 +7,20 @@ import org.apache.hadoop.mapreduce.Reducer
 import scala.collection.convert.ImplicitConversions.`iterator asScala`
 import collection.convert.ImplicitConversions.`iterable AsScalaIterable`
 
-class Job1Reducer extends Reducer[LongWritable,IntWritable,LongWritable,IntWritable] {
+class SortingReducer extends Reducer[LongWritable,IntWritable,IntWritable,IntWritable] {
   val logger = CreateLogger(classOf[Job3Mapper])
   val config = ObtainConfigReference("config") match {
     case Some(value) => value
     case None => throw new RuntimeException("Cannot obtain a reference to the config data.")
   }
-  override def reduce(key: LongWritable, values: java.lang.Iterable[IntWritable], context:Reducer[LongWritable, IntWritable, LongWritable, IntWritable]#Context): Unit = {
+  override def reduce(key: LongWritable, values: java.lang.Iterable[IntWritable], context:Reducer[LongWritable, IntWritable, IntWritable, IntWritable]#Context): Unit = {
     logger.info("Job1 reducer has started...")
-    val sum = values.foldLeft(0) { (m,x) => m + x.get }
-    context.write(key,new IntWritable(sum) )
+    val kmyKey = key.toString
+    values.foreach { token =>
+      val value = token.toString
+      context.write(new IntWritable(Integer.parseInt(value)), new IntWritable(Integer.parseInt(kmyKey)))
+    }
+
     logger.info("Job1 reducer has ended...")
   }
 
