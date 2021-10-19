@@ -268,9 +268,10 @@ The reason is that I have 5.000$ dollar credit to use that I got for being selec
 
 In this video we consider a large input log file.
 
-The size is around 1GB of data.
+The size is around 1GB of data and it can be found into the direcotory
+<code>input_dir_emr</code> in the project.
 
-Amazon EMR deploy:
+Amazon EMR deploy: https://youtu.be/540bYZgkOh0
 
 
 # Run the mapreduce
@@ -376,17 +377,28 @@ In this way you can call ssh, scp and other useful command directly with the hos
 In order to run the entire mapreduce in the testing environment 
 I wrote a bash script that will automatically run the commands for you and it's located in the root of the project named <code>hortons_deploy.sh </code>.
 
+In order to run the bash script we have to grant the execution permission
+
+```
+chmod 777 hortons_deploy.sh
+```
+The script is the following
 ```shell
 #!/bin/bash
 
+#Copy the input.log file into the VM via scp
 scp -P 2222 input_dir/input.log root@sandbox-hdp.hortonworks.com:~/
 
+#Compile the jar
 sbt clean compile assembly
 
+#Go on the directory of the jar
 cd target/scala-3.0.2/
 
+#Copy the jar file into the VM via scp
 scp -P 2222 acappe2_hw2.jar root@sandbox-hdp.hortonworks.com:~/
 
+#Login via SSH in the VM
 ssh root@sandbox-hdp.hortonworks.com -p 2222
 ```
 I will break it down.
@@ -395,7 +407,7 @@ First thing first, we have our VMWare running the Hortons Sandbox.
 We have to copy our test input log file into the VM.
 
 In order to do so, we run
-```
+```shell
 scp -P 2222 input_dir/input.log root@sandbox-hdp.hortonworks.com:~/
 
 ```
@@ -405,53 +417,54 @@ Second, let's compile our jar.
 A detailed guide on how to do so is already explained in the section above.
 
 In order to do that, we launch this command from the root of our project
-```
+```shell
 sbt clean compile assembly
 ```
 Then, we go to the directory of our jar
 
-```
+```shell
 cd target/scala-3.0.2/
 ```
 
 Then we copy the jar on the Hortons VM with scp
 
-```
+```shell
 scp -P 2222 acappe2_hw2.jar root@sandbox-hdp.hortonworks.com:~/
 
 ```
 Log into the Virtual Machine
 
-```
+```shell
 ssh root@sandbox-hdp.hortonworks.com -p 2222
 ```
-Push the input.log into HDFS running
-```shell
-hadoop fs -put input.log input_dir
-hadoop fs -ls input_dir/
-```
+From the Hortons VM we can then run the script <code>hortons_run.sh</code> in the rood directory of the project.
 
-Then run
+
+
 ```shell
 #!/bin/bash
 
 JAR="acappe2_hw2.jar"
 
 #Clean up input_dir
-hadoop fs -rm -rf input_dir
+hadoop fs -rm -r input_dir
 hadoop fs -mkdir input_dir
 
-#Clean up
-hadoop fs -rm -rf output_dir
-rm -rf output_dir
+#Send the input.log into the input_dir on HDFS
+hadoop fs -put input.log input_dir/
+hadoop fs -ls input_dir/
+
+#Clean up output dir
+hadoop fs -rm -r output_dir
+rm -r output_dir
 
 #Run hadoop
 hadoop jar $JAR input_dir output_dir
 
 #Get the output
 hadoop fs -get output_dir/
-
 ```
+
 
 ## Programming technology
 All the simulations has been written in Scala using a Functional Programming approach.
