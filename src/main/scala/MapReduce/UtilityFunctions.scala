@@ -9,4 +9,9 @@ object UtilityFunctions {
     if(matcherType.matches()) return true
     return false
   }
+  //Check if the list if empty, return the result
+  def isEmpty(list : List[String]): Boolean ={
+    if(list.isEmpty) return true
+    return false
+  }
 }

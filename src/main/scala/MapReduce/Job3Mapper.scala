@@ -26,7 +26,7 @@ class Job3Mapper extends Mapper[LongWritable, Text, Text, Text] {
       if (UtilityFunctions.matchType(token, patternType)) {
         //Match the RE into the message
         val listOfPatternMatch = patternLogMessage.findAllIn(logMessage).toList
-        if(!listOfPatternMatch.isEmpty){
+        if(!UtilityFunctions.isEmpty(listOfPatternMatch)){
           val lengthList = listOfPatternMatch.map(t => t.length)
           lengthList.foreach(l =>
             context.write(Text(token), Text(logMessage + config.getString("config.logMessageSeparator") + l.toString))
