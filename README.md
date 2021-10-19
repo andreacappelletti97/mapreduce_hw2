@@ -226,6 +226,8 @@ The output is stored into <code>output_dir/sorting</code> directory and it looks
 ```
 
 The first column is the time interval, the second column represent the number of matches.
+
+![alt text](assets/chart2.png)
 # Job2
 > For each message type you will produce the number of the generated log messages.
 ### Mapper
