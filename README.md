@@ -7,7 +7,15 @@ Andrea Cappelletti
 UIN: 674197701   
 acappe2@uic.edu
 
+All the examples contained in this documentation are taken running the basic log file in
+<code>input_dir</code>. 
 
+The file contains only 5000 lines and the purpose is just to provide a clear explanation of the mapreduce
+architecture.
+
+The <code>output_dir</code> for that input file is provided as well, just for guidance.
+
+Then a larger log file is provided under the section AWS YouTube Video.
 # TimeInterval job
 This job leads to the creation of different time intervals
 to analyse the overall logs.
@@ -44,8 +52,8 @@ The time interval is computed as explained above and then rounded.
 
 We can consider the example of key-value pair below. Where 1024 is the time interval and the value is the log message.
 ```
-key : 1024
-value: 20:18:54.482 [scala-execution-context-global-90] INFO  HelperUtils.Parameters$ - ;kNI&V%v<c#eSDK@lPY(
+key : 0
+value: 23:13:30.515 [scala-execution-context-global-90] WARN  HelperUtils.Parameters$ - Max count 5000 is used to create records instead of timeouts
 ```
 ### Reducer
 The reducer is located into the <code>TimeReducer</code> class.
@@ -57,11 +65,29 @@ The input of this mapreduce job is taken from the<code> input_dir/ </code>direct
 ### Output
 The output will be a CSV with the time interval and the log message
 ```
-0,20:13:54.458 [scala-execution-context-global-90] WARN  HelperUtils.Parameters$ - s%]s,+2k|D}K7b/XCwG&@7HDPR8z
-1,20:18:54.482 [scala-execution-context-global-90] INFO  HelperUtils.Parameters$ - ;kNI&V%v<c#eSDK@lPY(
+0,23:13:30.515 [scala-execution-context-global-90] WARN  HelperUtils.Parameters$ - Max count 5000 is used to create records instead of timeouts
+0,23:13:30.670 [scala-execution-context-global-90] WARN  HelperUtils.Parameters$ - s%]s,+2k|D}K7b/XCwG&@7HDPR8z
+0,23:13:30.716 [scala-execution-context-global-90] INFO  HelperUtils.Parameters$ - ;kNI&V%v<c#eSDK@lPY(
+0,23:13:30.752 [scala-execution-context-global-90] INFO  HelperUtils.Parameters$ - l9]|92!uHUQ/IVcz~(;.Uz%K*5jTUd08
+
+...
+
+1,23:13:35.700 [scala-execution-context-global-90] DEBUG HelperUtils.Parameters$ - r'VLq1]8C(S@WqQ(Ye
+1,23:13:35.136 [scala-execution-context-global-90] INFO  HelperUtils.Parameters$ - ,7xnHe1<|>FGp%Y]7,|z*^zd2~%Q)J0z(o30PL]p
+1,23:13:35.152 [scala-execution-context-global-90] INFO  HelperUtils.Parameters$ - 'DgLM5x5NZ]el`hXj/2Ww13Z)h>i#uclxniZ
+1,23:13:35.167 [scala-execution-context-global-90] INFO  HelperUtils.Parameters$ - r#yDy*7\F*u{M;lE}w4`V&V!Gf:2pmpMm_R5-K9I0oBx]tAm1W%/|{
+
+...
+
+2,23:13:41.921 [scala-execution-context-global-90] INFO  HelperUtils.Parameters$ - VI`voJ3XuI:=)~A8_|j|wIGby5AXKOue#%R"[[
+2,23:13:41.939 [scala-execution-context-global-90] INFO  HelperUtils.Parameters$ - {.q=E<e|5:E_?!KB[\|d0qR,tmv7]Hw1CX3lc.Dc67t~t&VO0B{$3i*N#p
+2,23:13:41.956 [scala-execution-context-global-90] DEBUG HelperUtils.Parameters$ - 1@<~,1nb5O5f*vQw<)M7C3VE>yp*{L;n{DN;Kv8Niy-!KveeyT
+2,23:13:41.972 [scala-execution-context-global-90] INFO  HelperUtils.Parameters$ - .-a=KjzAKa/!0?#{GEf_\QZVOK)APj!Z^@,%`./Y(wm>Px
+2,23:13:41.989 [scala-execution-context-global-90] WARN  HelperUtils.Parameters$ - ?!(BDfoKvD~gk'P50"C;Tih{X\7#f}Cw
+
 ```
 
-As we can see the first log message is in time interval 0 and the second one is in time interval 1.
+As we can see the first log messages are in time interval 0 and the second ones are in time interval 1, and so on.
 
 The entire output will be stored into the <code>output_dir/time_interval</code> directory and 
 then fed as input in the next jobs.
@@ -74,20 +100,20 @@ then fed as input in the next jobs.
 The mapper is located into the <code>Job0Mapper</code> class.
 
 It basically takes each log message as input with the time interval computed in the previous job.
-It checks if the log message contains the regural expression we are looking for and print out the result.
+It checks if the log message contains the regular expression we are looking for and print out the result.
 
 In order to do that, we set the time interval and the log level (INFO,WARN, DEBUG ... ) as a key, the number 1 to compute the frequency sum and either 1 or 0 if the regural expression
 is found into the message.
 
 ```
-key : 1024, INFO
+key : 0,DEBUG
 value: 1,1
 ```
 
-In the example above we have a log message at time interval 1024 that contains the regular expression.
+In the example above we have a log message at time interval 0 that contains the regular expression.
 
 ```
-key : 1024, INFO
+key : 0,DEBUG
 value: 1,0
 ```
 In this second example, the log message does not contain the regex.
@@ -104,11 +130,23 @@ The input of this mapreduce job is taken from the<code> output_dir/time_interval
 ### Output
 The output of this mapreduce job is a CSV file written into the directory <code> output_dir/job0 </code>.
 ```
-0,DEBUG,7,1
-0,ERROR,3,1
-0,INFO,66,4
-0,WARN,28,0
-1440,ERROR,2,2
+0,DEBUG,17,3
+0,ERROR,3,0
+0,INFO,154,8
+0,WARN,53,4
+
+...
+
+1,DEBUG,33,1
+1,INFO,213,16
+1,WARN,48,1
+
+...
+
+2,DEBUG,25,3
+2,ERROR,3,0
+2,INFO,209,18
+2,WARN,46,3
 ```
 The first column represents the time interval, the second the log type, the third
 the log type frequency into that interval and finally the number of matches.
@@ -126,7 +164,7 @@ The log message type in this case is just ERROR, because we are looking for ERRR
 The value is either 1 or 0 if the log message contains matches of the regular expression or not.
 
 ```
-key : 1024, ERROR
+key : 0, ERROR
 value: 1
 ```
 
@@ -142,10 +180,23 @@ The input of this mapreduce job is taken from the output_dir/time_interval direc
 ### Output
 The output of this mapreduce job is a CSV file with the number of matches found and the time interval ordered in descending order by number of matches found.
 ```
-2,1440
-1,0
+0,15
+0,14
+0,13
+0,12
+0,11
+0,10
+0,9
+0,8
+0,7
+1,6
+0,5
+0,4
+0,2
+0,0
+
 ```
-2 and 1 are the number of matches, 1440 and 0 are the time intervals of the log messages.
+In the first column we can find the number of matches, in the second column the time intervals of the log messages in the DESC order.
 
 ### Sorting
 In order to sort the output of this mapreduce I could have created a second mapreduce job with Secondary Sorting techniques.
@@ -154,7 +205,7 @@ I decided not to do it and flip the key and the values into the CSV final output
 ```
 job.setSortComparatorClass(classOf[LongWritable.DecreasingComparator])
 ```
-The reason behind my decision is not to run another time consuming mapreduce job, indeed the CSV column order does not affect the integrity of the data.
+The reason behind my decision is not to run another time-consuming mapreduce job, indeed the CSV column order does not affect the integrity of the data.
 
 # Job2
 > For each message type you will produce the number of the generated log messages.
@@ -184,11 +235,13 @@ The output of this mapreduce job is a CSV file with the number of log types cont
 
 The output is store into <code>output_dir/job2 </code> directory.
 ```
-DEBUG,7
-ERROR,5
-INFO,66
-WARN,28
+DEBUG,511
+ERROR,50
+INFO,3501
+WARN,941
 ```
+
+![alt text](assets/chart.png)
 
 # Job3
 > Produce the number of characters in each log message for each log message type that contain the highest number of characters in the detected instances of the designated regex pattern.
@@ -255,9 +308,10 @@ The output of this mapreduce job is a CSV file with the length of log message wi
 
 The output is store into <code>output_dir/job3 </code> directory.
 ```
-DEBUG,68
-ERROR,21
-INFO,45
+DEBUG,80
+ERROR,36
+INFO,101
+WARN,57
 ```
 
 # AWS YouTube Video
@@ -266,10 +320,14 @@ the account of my startup Nuklex (www.nuklex.com) as agreed with Professor Mark.
 
 The reason is that I have 5.000$ dollar credit to use that I got for being selected at Y Combinator.
 
+![alt text](assets/credit.png)
+
 In this video we consider a large input log file.
 
-The size is around 1GB of data and it can be found into the direcotory
-<code>input_dir_emr</code> in the project.
+The size is around 1GB of data and it can be downloaded here: https://drive.google.com/file/d/1m140T0qFqRZLbyvD2-9ETV5nsW-knXhO/view?usp=sharing
+
+NB: in order to access the file you have to be logged with the University account
+
 
 Amazon EMR deploy: https://youtu.be/540bYZgkOh0
 
@@ -437,9 +495,9 @@ Log into the Virtual Machine
 ```shell
 ssh root@sandbox-hdp.hortonworks.com -p 2222
 ```
-From the Hortons VM we can then run the script <code>hortons_run.sh</code> in the rood directory of the project.
+From the Hortons VM we can then run the script <code>hortons_run.sh</code>
 
-
+In order to run the bash script we have to grant the execution permission as previously.
 
 ```shell
 #!/bin/bash
@@ -480,7 +538,7 @@ While writing the simulations the following best practices has been adopted
 - No while or for loop is present, instead recursive functions are largely used into the project.
 
 
-- Modular architecture (code is divided by module to enhance mainteinability)
+- Modular architecture (code is divided by module to enhance maintainability)
 
 
 
@@ -492,3 +550,4 @@ have been consulted.
 - http://hadoop.apache.org
 - https://www.cloudera.com/downloads/hortonworks-sandbox.html
 - https://www.vmware.com
+- https://aws.amazon.com/emr/
