@@ -402,7 +402,31 @@ sbt clean compile test
 ```
 
 The output should be the following
-```
+```scala
+[info] TimeDriverTestSuite:
+[info] configuration parameters module
+[info] - should obtain the right type matching pattern
+[info] - should Set the right output format CSV
+[info] - should Set the right type of logMessagePattern
+[info] Job3TestSuite:
+[info] UtilityFunction in Job3Mapper
+[info] matchType
+[info] - should match the right log message type from the config regex
+[info] TypeFrequencyTestSuite:
+[info] configuration parameters module
+[info] - should obtain the right type matching pattern
+[info] - should Set the right output format CSV
+[info] UtilityFunctionsTestSuite:
+[info] UtilityFunction
+[info] isEmpty
+[info] - should return true if the list of Strings is empty
+[info] Run completed in 1 second, 182 milliseconds.
+[info] Total number of tests run: 7
+[info] Suites: completed 4, aborted 0
+[info] Tests: succeeded 7, failed 0, canceled 0, ignored 0, pending 0
+[info] All tests passed.
+[success] Total time: 27 s, completed 19 Oct 2021, 18:54:12
+
 
 ```
 
