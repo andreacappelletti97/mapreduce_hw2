@@ -14,14 +14,13 @@ class SortingReducer extends Reducer[LongWritable,IntWritable,IntWritable,IntWri
     case None => throw new RuntimeException("Cannot obtain a reference to the config data.")
   }
   override def reduce(key: LongWritable, values: java.lang.Iterable[IntWritable], context:Reducer[LongWritable, IntWritable, IntWritable, IntWritable]#Context): Unit = {
-    logger.info("Job1 reducer has started...")
+    logger.info("Sorting reducer has started...")
     val kmyKey = key.toString
     values.foreach { token =>
       val value = token.toString
       context.write(new IntWritable(Integer.parseInt(value)), new IntWritable(Integer.parseInt(kmyKey)))
     }
-
-    logger.info("Job1 reducer has ended...")
+    logger.info("Sorting reducer has ended...")
   }
 
 }

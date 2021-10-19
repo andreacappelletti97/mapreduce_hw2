@@ -20,7 +20,7 @@ object SortingDriver {
   }
 
   def Run() = {
-    val jobName = config.getString("config.job3.name")
+    val jobName = config.getString("config.sorting.name")
     //Instanciate the configuration
     val conf: Configuration = new Configuration()
     //Set the output to CSV format
@@ -38,8 +38,8 @@ object SortingDriver {
     job.setOutputValueClass(classOf[IntWritable])
     job.setOutputFormatClass(classOf[TextOutputFormat[LongWritable, IntWritable]])
     //Setup input and output directories
-    FileInputFormat.addInputPath(job, new Path("output_dir/job1"))
-    FileOutputFormat.setOutputPath(job, new Path("output_dir/sorting"))
+    FileInputFormat.addInputPath(job, new Path(config.getString("config.sorting.inputDir")))
+    FileOutputFormat.setOutputPath(job, new Path(config.getString("config.sorting.outputDir")))
     //Start the job
     logger.info("Running Sorting...")
     job.waitForCompletion(config.getBoolean("config.verbose"))
