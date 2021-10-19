@@ -178,35 +178,54 @@ a FoldLeft function.
 The input of this mapreduce job is taken from the output_dir/time_interval directory because we have to take into account different time intervals.
 
 ### Output
-The output of this mapreduce job is a CSV file with the number of matches found and the time interval ordered in descending order by number of matches found.
+The output of this mapreduce job is a CSV file with the time interval and the number of matches found.
 ```
-0,15
-0,14
-0,13
-0,12
-0,11
-0,10
-0,9
-0,8
-0,7
-1,6
-0,5
-0,4
-0,2
 0,0
+2,0
+4,0
+5,0
+6,1
+7,0
+8,0
+9,0
+10,0
+11,0
+12,0
+13,0
+14,0
+15,0
 
 ```
-In the first column we can find the number of matches, in the second column the time intervals of the log messages in the DESC order.
+In the first column we can find the time interval, in the second column the number of matches.
 
 ### Sorting
-In order to sort the output of this mapreduce I could have created a second mapreduce job with Secondary Sorting techniques.
+In order to sort the output of this mapreduce I have created a second mapreduce job with Secondary Sorting technique.
 
-I decided not to do it and flip the key and the values into the CSV final output, changing the standard comparator in the driver class <code>Job1Driver</code> and sorting them in descending order.
+In order to sort the CSV by DESC values we need to flip the key and the value and change the mapreduce standard comparator to into the <code>SortingDriver</code> class.
 ```
 job.setSortComparatorClass(classOf[LongWritable.DecreasingComparator])
 ```
-The reason behind my decision is not to run another time-consuming mapreduce job, indeed the CSV column order does not affect the integrity of the data.
+As we can see, the mapreduce will take care itself for sorting our our CSV by value.
 
+The output is stored into <code>output_dir/sorting</code> directory and it looks like
+```
+6,1
+0,0
+2,0
+4,0
+5,0
+7,0
+8,0
+9,0
+10,0
+11,0
+12,0
+13,0
+14,0
+15,0
+```
+
+The first column is the time interval, the second column represent the number of matches.
 # Job2
 > For each message type you will produce the number of the generated log messages.
 ### Mapper
