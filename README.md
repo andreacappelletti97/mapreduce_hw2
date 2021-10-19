@@ -320,8 +320,6 @@ the account of my startup Nuklex (www.nuklex.com) as agreed with Professor Mark.
 
 The reason is that I have 5.000$ dollar credit to use that I got for being selected at Y Combinator.
 
-![alt text](assets/credit.png)
-
 In this video we consider a large input log file.
 
 The size is around 1GB of data and it can be downloaded here: https://drive.google.com/file/d/1m140T0qFqRZLbyvD2-9ETV5nsW-knXhO/view?usp=sharing
