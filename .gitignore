@@ -1,7 +1,6 @@
 
 # sbt
 bin/
-input_dir/
 output/
 project/project/
 project/target/
